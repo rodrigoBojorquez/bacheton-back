@@ -34,7 +34,7 @@ Desarrollar una **aplicación web** que permita a los ciudadanos **reportar y da
 | **Andrés García Leyva** | Desarrollador Fullstack | [GitHub](https://github.com/)           | correo@institucion.edu   |  
 | **Dilan Gabriel Och Montero** | Desarrollador Frontend | [GitHub](https://github.com/)           | correo@institucion.edu   |  
 | **Juan Carlos López Can** | Desarrollador Frontend | [GitHub](https://github.com/)           | correo@institucion.edu   |  
-| **Ricardo Jesús Chi Chan** | Desarrollador Frontend | [GitHub](https://github.com/)           | correo@institucion.edu   |  
+| **Ricardo Jesús Chi Chan** | Desarrollador Frontend | [RicardojCh10](https://github.com/RicardojCh10)   | 22393166@utcancun.edu.mx   |  
 
 ## 🛠 Tecnologías y Librerías
 
