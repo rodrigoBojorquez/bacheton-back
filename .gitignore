@@ -257,6 +257,8 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
+Bacheton.Api/Data/*
+
 # JetBrains Rider
 .idea/
 *.sln.iml
