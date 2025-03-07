@@ -257,7 +257,7 @@ paket-files/
 # FAKE - F# Make
 .fake/
 
-Bacheton.Api/Data/*
+Bacheton.Api/Data/*.db
 
 # JetBrains Rider
 .idea/
