@@ -33,7 +33,7 @@ Desarrollar una **aplicación web** que permita a los ciudadanos **reportar y da
 | **Rodrigo Bojorquez Chi** | Líder del Proyecto / Desarrollador Fullstack | [rodrigobojorquez](https://github.com/rodrigoBojorquez) | 22393127@utcancun.edu.mx |  
 | **Andrés García Leyva** | Desarrollador Fullstack | [AndresGarciaLv](https://github.com/AndresGarciaLv)           | 22393199@utcancun.edu.mx   |  
 | **Dilan Gabriel Och Montero** | Desarrollador Frontend | [GitHub](https://github.com/)           | correo@institucion.edu   |  
-| **Juan Carlos López Can** | Desarrollador Frontend | [GitHub](https://github.com/)           | correo@institucion.edu   |  
+| **Juan Carlos López Can** | Desarrollador Frontend | [JCLC7](https://github.com/JCLC7)           | 19393056@utcancun.edu.mx  |  
 | **Ricardo Jesús Chi Chan** | Desarrollador Frontend | [RicardojCh10](https://github.com/RicardojCh10)   | 22393166@utcancun.edu.mx   |  
 
 ## 🛠 Tecnologías y Librerías
