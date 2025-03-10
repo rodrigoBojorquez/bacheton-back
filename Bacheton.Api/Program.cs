@@ -28,6 +28,7 @@ app.MapOpenApi();
 app.UseSwaggerUI(config => { config.SwaggerEndpoint("/openapi/v1.json", "Bacheton API"); });
 
 var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images");
+
 if (!Directory.Exists(imagesPath))
 {
     Directory.CreateDirectory(imagesPath);
