@@ -1,3 +1,4 @@
+using Bacheton.Api.Common.Attributes;
 using Bacheton.Api.Common.Controllers;
 using Bacheton.Application.Interfaces.Repositories;
 using Bacheton.Application.User.Commands.Add;
@@ -26,6 +27,7 @@ public class UsersController : ApiController
     public record UpdateUserRequest(Guid Id, string Name, string Email, string Password, Guid RoleId);
 
     [HttpGet]
+    [RequiredPermission("read:Usuarios")]
     public async Task<IActionResult> List([FromQuery] ListUsersRequest request)
     {
         var query = new ListUsersQuery(request.Page, request.PageSize, request.Search);
@@ -35,6 +37,7 @@ public class UsersController : ApiController
     }
 
     [HttpGet("{id}")]
+    [RequiredPermission("read:Usuarios")]
     public async Task<IActionResult> Get(Guid id)
     {
         var user = await _userRepository.IncludeRoleAsync(id);
@@ -45,6 +48,7 @@ public class UsersController : ApiController
     }
     
     [HttpPost]
+    [RequiredPermission("create:Usuarios")]
     public async Task<IActionResult> Add(AddUserRequest request)
     {
         var command = new AddUserCommand(request.Name, request.Email, request.Password, request.RoleId);
@@ -54,6 +58,7 @@ public class UsersController : ApiController
     }
     
     [HttpDelete("{id}")]
+    [RequiredPermission("delete:Usuarios")]
     public async Task<IActionResult> Delete(Guid id)
     {
         var user = await _userRepository.GetByIdAsync(id);
@@ -65,6 +70,7 @@ public class UsersController : ApiController
     }
 
     [HttpPut]
+    [RequiredPermission("update:Usuarios")]
     public async Task<IActionResult> Update(UpdateUserRequest request)
     {
         var command = new EditUserCommand(request.Id, request.Name, request.Email, request.Password, request.RoleId);
