@@ -17,7 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Reports\Commands\Add\" />
       <Folder Include="Reports\Commands\Update\" />
     </ItemGroup>
 

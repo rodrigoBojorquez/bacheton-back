@@ -24,9 +24,10 @@ public static partial class Seeder
             // Insertar modulos
             var modules = new[]
             {
-                new Module { Name = "Usuarios", Description = "Módulo de gestión de usuarios" },
-                new Module { Name = "Roles", Description = "Módulo de gestión de roles" },
-                new Module { Name = "Permisos", Description = "Módulo de gestión de permisos" },
+                new Module { Name = "Usuarios", Description = "Módulo de gestión de usuarios", Icon = "pi pi-users"},
+                new Module { Name = "Roles", Description = "Módulo de gestión de roles", Icon = "pi pi-shield"},
+                new Module { Name = "Permisos", Description = "Módulo de gestión de permisos", Icon = "pi pi-lock"},
+                new Module { Name = "Reportes", Description = "Modulo de reportes de bacheo", Icon = "pi pi-flag"},    
             };
 
             await context.Set<Module>().AddRangeAsync(modules);
@@ -37,15 +38,26 @@ public static partial class Seeder
 
 
             // Insertar permisos
-            var permissionNames = new[] { "create", "read", "update", "delete" };
+            var permissionNames = new[]
+            {
+                new { Name = "create", DisplayName = "Crear", Icon = "pi pi-plus" },
+                new { Name = "read", DisplayName = "Ver", Icon = "pi pi-eye" },
+                new { Name = "update", DisplayName = "Actualizar", Icon = "pi pi-pencil" },
+                new { Name = "delete", DisplayName = "Eliminar", Icon = "pi pi-trash" }
+            };
+
             var permissions = modules
-                .Where(m => m.Name != "AsistenteVirtual")
-                .SelectMany(m => permissionNames.Select(p => new Permission { Name = p, ModuleId = m.Id }))
+                .Where(m => m.Name != "Permisos")
+                .SelectMany(m => permissionNames.Select(p => new Permission { Name = p.Name, DisplayName = p.DisplayName, Icon = p.Icon, ModuleId = m.Id }))
                 .ToList();
 
             permissions.AddRange(new[]
             {
-                new Permission { Name = "superAdmin" }
+                new Permission { Name = "superAdmin", IsPublic = false, DisplayName = "Super acceso", Icon = "pi pi-star" },
+                new Permission { Name = "resolve", ModuleId = modulesIds["Reportes"], DisplayName = "Resolver", Icon = "pi pi-check" },
+                new Permission { Name = "monitoring", ModuleId = modulesIds["Reportes"], DisplayName = "Monitorear", Icon = "pi pi-chart-line" },
+                new Permission { Name = "read", ModuleId = modulesIds["Permisos"], DisplayName = "Ver", Icon = "pi pi-eye" },
+                new Permission { Name = "update", ModuleId = modulesIds["Permisos"], DisplayName = "Actualizar", Icon = "pi pi-pencil" },
             });
 
             await context.Set<Permission>().AddRangeAsync(permissions);

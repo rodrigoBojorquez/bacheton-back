@@ -1,5 +1,7 @@
+using System.Linq.Expressions;
 using Bacheton.Application.Common.Results;
 using Bacheton.Application.Interfaces.Repositories;
+using Bacheton.Application.Permissions.Common;
 using Bacheton.Domain.Entities;
 using Bacheton.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -20,14 +22,18 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
             .Include(p => p.Module)
             .ToListAsync();
     }
-    
-    public new async Task<ListResult<Permission>> ListAllAsync()
+
+    public new async Task<ListResult<PermissionResult>> ListAsync(
+        Expression<Func<Permission, bool>>? filter = null)
     {
         var total = await Context.Permissions.CountAsync();
         var data = await Context.Permissions
             .Include(p => p.Module)
+            .Where(p => p.IsPublic)
             .ToListAsync();
-        
-        return new ListResult<Permission>(Page: 1, PageSize:total, TotalItems: total, Items: data);
+
+        return new ListResult<PermissionResult>(Page: 1, PageSize: total, TotalItems: total,
+            Items: data.Select(
+                p => new PermissionResult(p.Id, p.Name, p.DisplayName, p.Icon, p.ModuleId, p.Module.Name)).ToList());
     }
 }
