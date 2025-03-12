@@ -34,6 +34,6 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
 
         return new ListResult<PermissionResult>(Page: 1, PageSize: total, TotalItems: total,
             Items: data.Select(
-                p => new PermissionResult(p.Id, p.Name, p.DisplayName, p.Icon, p.ModuleId, p.Module.Name)).ToList());
+                p => new PermissionResult(p.Id, p.Name, p.DisplayName, p.Icon, p.ModuleId, p.Module.Name, p.ClientPath)).ToList());
     }
 }

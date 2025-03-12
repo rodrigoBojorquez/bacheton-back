@@ -57,7 +57,7 @@ public class AuthUtilities : IAuthUtilities
         var claim = _httpContextAccessor.HttpContext?.User?
             .Claims.FirstOrDefault(c => c.Type == BachetonConstants.PermissionsClaim)?.Value;
 
-        return claim?.Contains(BachetonConstants.SuperAccessPermission) ?? false;
+        return claim?.Contains(BachetonConstants.Permissions.SuperAccessPermission) ?? false;
     }
 
     public async Task<ErrorOr<AccessLevel>> ShowAccessLevel(Guid userId)
@@ -66,10 +66,13 @@ public class AuthUtilities : IAuthUtilities
         if (user is null) return Errors.User.NotFound;
 
         var permissions = await _permissionRepository.GetByRoleAsync(user.RoleId);
-        if (permissions.Any(p => p.Name == BachetonConstants.SuperAccessPermission))
+
+        if (permissions.Any(p => p.Name == BachetonConstants.Permissions.SuperAccessPermission))
             return await GetFullAccess();
 
-        return new AccessLevel { Modules = MapPermissionsToModules(permissions) };
+        var rootPath = GetRootPath(permissions);
+
+        return new AccessLevel { Modules = MapPermissionsToModules(permissions), RootPath = rootPath };
     }
 
     private async Task<AccessLevel> GetFullAccess()
@@ -83,11 +86,34 @@ public class AuthUtilities : IAuthUtilities
             {
                 Name = modules.TryGetValue(g.Key ?? Guid.Empty, out var module) ? module.Name : "General",
                 Icon = module?.Icon ?? "pi pi-cog",
-                Permissions = g.Select(p => p.Name).Distinct().ToList(),
+                Permissions = g.Select(p => new PermissionPolicy
+                {
+                    Name = p.Name,
+                    ClientPath = p.ClientPath
+                }).Distinct().ToList(),
             })
             .ToList();
 
-        return new AccessLevel { Modules = groupedModules };
+        groupedModules.Add(new ModuleAccess
+        {
+            Name = "Administracion",
+            Icon = "pi pi-cog",
+            Permissions =
+            [
+                new PermissionPolicy
+                {
+                    Name = "",
+                    ClientPath = "/admin/dashboard"
+                }
+            ]
+        });
+
+        return new AccessLevel { Modules = groupedModules, RootPath = "/admin/dashboard" };
+    }
+
+    private string GetRootPath(IEnumerable<Permission> permissions)
+    {
+        return permissions.Any(p => p.Name == BachetonConstants.Permissions.SupervisorPermission) ? "/app/map" : "/app";
     }
 
     private List<ModuleAccess> MapPermissionsToModules(IEnumerable<Permission> permissions)
@@ -98,7 +124,11 @@ public class AuthUtilities : IAuthUtilities
             {
                 Name = g.Key?.Name ?? "General",
                 Icon = g.Key?.Icon ?? "pi pi-cog",
-                Permissions = g.Select(p => p.Name).Distinct().ToList(),
+                Permissions = g.Select(p => new PermissionPolicy
+                {
+                    Name = p.Name,
+                    ClientPath = p.ClientPath
+                }).Distinct().ToList(),
             })
             .ToList();
     }

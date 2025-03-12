@@ -24,6 +24,6 @@ public class FindPermissionQueryHandler : IRequestHandler<FindPermissionQuery, E
             return Errors.Permission.NotFound;
 
         return new PermissionResult(permission.Id, permission.Name, permission.DisplayName, permission.Icon,
-            permission.ModuleId, permission.Module.Name);
+            permission.ModuleId, permission.Module.Name, permission.ClientPath);
     }
 }

@@ -30,7 +30,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, ErrorOr<A
         if (user is not null)
             return Errors.User.EmailAlreadyExists;
 
-        var userRole = await _roleRepository.GetRoleByNameAsync(BachetonConstants.UserRole);
+        var userRole = await _roleRepository.GetRoleByNameAsync(BachetonConstants.Roles.UserRole);
         
         if (userRole is null)
             return Errors.Role.NotFound;
