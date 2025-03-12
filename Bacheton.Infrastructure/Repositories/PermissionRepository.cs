@@ -22,6 +22,13 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
             .Include(p => p.Module)
             .ToListAsync();
     }
+    
+    public new async Task<Permission?> GetByIdAsync(Guid id)
+    {
+        return await Context.Permissions
+            .Include(p => p.Module)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
 
     public new async Task<ListResult<PermissionResult>> ListAsync(
         Expression<Func<Permission, bool>>? filter = null)
