@@ -29,8 +29,8 @@ public class ReportsController : ApiController
     }
 
     public record MonitoringReportsRequest(
-        int Page,
-        int PageSize,
+        int Page = 1,
+        int PageSize = 10,
         ReportStatus? ReportStatus = null,
         ReportSeverity? ReportSeverity = null,
         Guid? ResolvedById = null,
@@ -40,7 +40,7 @@ public class ReportsController : ApiController
         double? Longitude = null,
         double? RadiusKm = null);
 
-    public record ListUserReportsRequest(int Page, int PageSize);
+    public record ListUserReportsRequest(int Page = 1, int PageSize = 10);
 
     public record CreateReportRequest(
         string Comment,

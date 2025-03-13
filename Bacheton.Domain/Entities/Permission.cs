@@ -6,6 +6,7 @@ public class Permission
     public string Name { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string? Icon { get; set; }
+    public string? ClientPath { get; set; }
     public bool IsPublic { get; set; } = true;
     public Guid? ModuleId { get; set; }
     public Module Module { get; set; } = null!;

@@ -22,6 +22,13 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
             .Include(p => p.Module)
             .ToListAsync();
     }
+    
+    public new async Task<Permission?> GetByIdAsync(Guid id)
+    {
+        return await Context.Permissions
+            .Include(p => p.Module)
+            .FirstOrDefaultAsync(p => p.Id == id);
+    }
 
     public new async Task<ListResult<PermissionResult>> ListAsync(
         Expression<Func<Permission, bool>>? filter = null)
@@ -34,6 +41,6 @@ public class PermissionRepository : GenericRepository<Permission>, IPermissionRe
 
         return new ListResult<PermissionResult>(Page: 1, PageSize: total, TotalItems: total,
             Items: data.Select(
-                p => new PermissionResult(p.Id, p.Name, p.DisplayName, p.Icon, p.ModuleId, p.Module.Name)).ToList());
+                p => new PermissionResult(p.Id, p.Name, p.DisplayName, p.Icon, p.ModuleId, p.Module.Name, p.ClientPath)).ToList());
     }
 }

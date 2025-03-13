@@ -24,10 +24,18 @@ public static partial class Seeder
             // Insertar modulos
             var modules = new[]
             {
-                new Module { Name = "Usuarios", Description = "Módulo de gestión de usuarios", Icon = "pi pi-users"},
-                new Module { Name = "Roles", Description = "Módulo de gestión de roles", Icon = "pi pi-shield"},
-                new Module { Name = "Permisos", Description = "Módulo de gestión de permisos", Icon = "pi pi-lock"},
-                new Module { Name = "Reportes", Description = "Modulo de reportes de bacheo", Icon = "pi pi-flag"},    
+                new Module { Name = "Usuarios", Description = "Módulo de gestión de usuarios", Icon = "pi pi-users" },
+                new Module { Name = "Roles", Description = "Módulo de gestión de roles", Icon = "pi pi-shield" },
+                new Module { Name = "Permisos", Description = "Módulo de gestión de permisos", Icon = "pi pi-lock" },
+                new Module { Name = "Reportes", Description = "Modulo de reportes de bacheo", Icon = "pi pi-flag" },
+            };
+
+            var moduleTranslations = new Dictionary<string, string>
+            {
+                { "Usuarios", "users" },
+                { "Roles", "roles" },
+                { "Reportes", "reports" },
+                { "Permisos", "permissions" }
             };
 
             await context.Set<Module>().AddRangeAsync(modules);
@@ -48,22 +56,60 @@ public static partial class Seeder
 
             var permissions = modules
                 .Where(m => m.Name != "Permisos")
-                .SelectMany(m => permissionNames.Select(p => new Permission { Name = p.Name, DisplayName = p.DisplayName, Icon = p.Icon, ModuleId = m.Id }))
+                .SelectMany(m => permissionNames.Select(p => new Permission
+                {
+                    Name = p.Name,
+                    DisplayName = p.DisplayName,
+                    Icon = p.Icon,
+                    ModuleId = m.Id,
+                    ClientPath = moduleTranslations.TryGetValue(m.Name, out var moduleName)
+                        ? (p.Name == "read" ? $"/{moduleName}" : $"/{moduleName}/{p.Name}")
+                        : (p.Name == "read" ? $"/{m.Name.ToLower()}" : $"/{m.Name.ToLower()}/{p.Name}")
+                }))
                 .ToList();
 
             permissions.AddRange(new[]
             {
-                new Permission { Name = "superAdmin", IsPublic = false, DisplayName = "Super acceso", Icon = "pi pi-star" },
-                new Permission { Name = "resolve", ModuleId = modulesIds["Reportes"], DisplayName = "Resolver", Icon = "pi pi-check" },
-                new Permission { Name = "monitoring", ModuleId = modulesIds["Reportes"], DisplayName = "Monitorear", Icon = "pi pi-chart-line" },
-                new Permission { Name = "read", ModuleId = modulesIds["Permisos"], DisplayName = "Ver", Icon = "pi pi-eye" },
-                new Permission { Name = "update", ModuleId = modulesIds["Permisos"], DisplayName = "Actualizar", Icon = "pi pi-pencil" },
+                new Permission
+                    { Name = "superAdmin", IsPublic = false, DisplayName = "Super acceso", Icon = "pi pi-star" },
+                new Permission
+                {
+                    Name = "resolve",
+                    ModuleId = modulesIds["Reportes"],
+                    DisplayName = "Resolver",
+                    Icon = "pi pi-check",
+                    ClientPath = "/reports/resolve"
+                },
+                new Permission
+                {
+                    Name = "monitoring",
+                    ModuleId = modulesIds["Reportes"],
+                    DisplayName = "Monitorear",
+                    Icon = "pi pi-chart-line",
+                    ClientPath = "/reports/monitoring"
+                },
+                new Permission
+                {
+                    Name = "read",
+                    ModuleId = modulesIds["Permisos"],
+                    DisplayName = "Ver",
+                    Icon = "pi pi-eye",
+                    ClientPath = "/permissions"
+                },
+                new Permission
+                {
+                    Name = "update",
+                    ModuleId = modulesIds["Permisos"],
+                    DisplayName = "Actualizar",
+                    Icon = "pi pi-pencil",
+                    ClientPath = "/permissions/update"
+                },
             });
 
             await context.Set<Permission>().AddRangeAsync(permissions);
             await context.SaveChangesAsync();
             context.ChangeTracker.Clear();
-            
+
 
             var permissionsIds = permissions
                 .Where(p => p.ModuleId.HasValue)

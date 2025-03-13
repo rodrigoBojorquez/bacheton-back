@@ -21,7 +21,7 @@ public class RolesController : ApiController
         _roleRepository = roleRepository;
     }
 
-    public record ListRolesRequest(int Page, int PageSize, string? Search);
+    public record ListRolesRequest(int Page = 1, int PageSize = 10, string? Search = null);
     public record CreateRoleRequest(string Name, List<Guid> Permissions, string? Description);
     public record UpdateRoleRequest(Guid Id, string Name, List<Guid> Permissions, string? Description);
 
@@ -56,7 +56,7 @@ public class RolesController : ApiController
         return result.Match(updated => Ok(updated), Problem);
     }
     
-    [HttpDelete]
+    [HttpDelete("{id:guid}")]
     [RequiredPermission("delete:Roles")]
     public async Task<IActionResult> Delete(Guid id)
     {

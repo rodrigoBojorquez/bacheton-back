@@ -4,7 +4,6 @@ using Bacheton.Application.Common.Auth;
 using Bacheton.Application.Interfaces.Services;
 using Bacheton.Application.User.Commands.Register;
 using Bacheton.Application.User.Queries.Login;
-using Bacheton.Domain.Constants;
 using Bacheton.Domain.Errors;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

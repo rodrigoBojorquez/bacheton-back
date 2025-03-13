@@ -6,4 +6,5 @@ public record PermissionResult(
     string DisplayName,
     string? Icon,
     Guid? ModuleId,
-    string? ModuleName);
+    string? ModuleName,
+    string? ClientPath = null);

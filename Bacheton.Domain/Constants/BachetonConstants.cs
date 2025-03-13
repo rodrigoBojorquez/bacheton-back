@@ -4,7 +4,14 @@ public static class BachetonConstants
 {
     public const string PermissionsClaim = "permissions";
 
-    public const string SuperAccessPermission = "superAdmin";
+    public static class Permissions
+    {
+        public const string SuperAccessPermission = "superAdmin";
+        public const string SupervisorPermission = "monitoring:Reportes";
+    }
     
-    public const string UserRole = "Usuario";
+    public static class Roles
+    {
+        public const string UserRole = "Usuario";
+    }
 }
