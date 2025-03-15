@@ -44,6 +44,7 @@ public static class ServiceContainer
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped<IModuleRepository, ModuleRepository>();
         services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddSingleton<ILogRepository, SeqLogRepository>();
 
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<ITokenService, JwtService>();

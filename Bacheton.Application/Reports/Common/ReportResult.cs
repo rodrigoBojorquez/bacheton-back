@@ -13,5 +13,5 @@ public record ReportResult(
     DateTime CreateDate,
     Guid UserId,
     string UserName,
-    Guid? ResolvedById,
-    string ResolvedByUserName);
+    Guid? ResolvedById = null,
+    string? ResolvedByUserName = null);
