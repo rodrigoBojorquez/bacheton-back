@@ -39,7 +39,7 @@ public class ListReportsQueryHandler : IRequestHandler<ListReportsQuery, ErrorOr
             result.Items.Select(r => new ReportResult(
                 r.Id, r.Comment, r.Location, r.Latitude, r.Longitude,
                 r.ResolveDate, r.ImageUrl, r.Status.ToString(), r.Severity.ToString(), r.CreateDate, r.UserId,
-                r.User.Name, r.ResolvedById, r.ResolvedBy.Name)
+                r.User.Name, r.ResolvedById, r.ResolvedBy?.Name)
             ).ToList());
     }
 }
