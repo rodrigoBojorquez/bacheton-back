@@ -25,6 +25,7 @@ public class SeqLogRepository : ILogRepository
         {
             var requestPath = e.Properties?.FirstOrDefault(p => p.Name == "RequestPath")?.Value?.ToString();
             var status = e.Properties?.FirstOrDefault(p => p.Name == "StatusCode")?.Value?.ToString();
+            var method = e.Properties?.FirstOrDefault(p => p.Name == "RequestMethod")?.Value?.ToString();
 
             return new LogResult(
                 Id: e.Id,
@@ -34,7 +35,8 @@ public class SeqLogRepository : ILogRepository
                 TraceId: e.TraceId,
                 Duration: e.Properties?.FirstOrDefault(p => p.Name == "Elapsed")?.Value?.ToString(),
                 UserId: e.Properties?.FirstOrDefault(p => p.Name == "UserId")?.Value?.ToString(),
-                Level: e.Level
+                Level: e.Level,
+                Method: method
             );
         }).ToList();
 
