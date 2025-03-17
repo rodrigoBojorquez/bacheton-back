@@ -12,6 +12,14 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
     {
     }
 
+    public new async Task<Report?> GetByIdAsync(Guid id)
+    {
+        return await Context.Reports
+            .Include(r => r.User)
+            .Include(r => r.ResolvedBy)
+            .FirstOrDefaultAsync(r => r.Id == id);
+    }
+
     public async Task<ListResult<Report>> ListAsync(int page, int pageSize, ReportStatus? reportStatus = null,
         ReportSeverity? reportSeverity = null,
         Guid? userId = null, Guid? resolvedById = null, DateTime? startDate = null, DateTime? endDate = null,
@@ -70,7 +78,7 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
 
         if (endDate.HasValue)
             query = query.Where(r => r.CreateDate <= endDate.Value);
-        
+
         return query;
     }
 }

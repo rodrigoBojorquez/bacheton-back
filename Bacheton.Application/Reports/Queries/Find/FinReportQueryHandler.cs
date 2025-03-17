@@ -26,7 +26,7 @@ public class FinReportQueryHandler : IRequestHandler<FindReportQuery, ErrorOr<Re
             report.Id, report.Comment, report.Location, report.Latitude, report.Longitude,
             report.ResolveDate, report.ImageUrl, report.Status.ToString(), report.Severity.ToString(),
             report.CreateDate, report.UserId,
-            report.User.Name, report.ResolvedById, report.ResolvedBy.Name
+            report.User.Name, report.ResolvedById, report.ResolvedBy?.Name
         );
     }
 }

@@ -49,7 +49,7 @@ public class ReportsController : ApiController
         double Longitude,
         ReportSeverity Severity);
 
-    public record UpdateReportRequest(Guid Id, string Comment, ReportSeverity Severity);
+    public record UpdateReportRequest(Guid Id, string Comment, ReportSeverity Severity, ReportStatus Status);
 
     [HttpGet("monitoring")]
     [RequiredPermission("monitoring:Reportes")]
@@ -121,7 +121,7 @@ public class ReportsController : ApiController
     [RequiredPermission("update:Reportes")]
     public async Task<IActionResult> Update([FromBody] UpdateReportRequest request)
     {
-        var command = new UpdateReportCommand(request.Id, request.Comment, request.Severity);
+        var command = new UpdateReportCommand(request.Id, request.Comment, request.Severity, request.Status);
         var result = await _mediator.Send(command);
         
         return result.Match(r => Ok(r), Problem);
@@ -134,14 +134,5 @@ public class ReportsController : ApiController
         await _reportRepository.DeleteAsync(id);
         return Ok();
     }
-
-    [HttpPatch("{id:guid}/resolve")]
-    [RequiredPermission("resolve:Reportes")]
-    public async Task<IActionResult> Resolve(Guid id)
-    {
-        var command = new ResolveReportCommand(id);
-        var result = await _mediator.Send(command);
-
-        return result.Match(r => Ok(r), Problem);
-    }
+    
 }
