@@ -1,5 +1,6 @@
 using Bacheton.Application.Interfaces.Repositories;
 using Bacheton.Application.Interfaces.Services;
+using Bacheton.Domain.Entities;
 using Bacheton.Domain.Errors;
 using ErrorOr;
 using MediatR;
@@ -27,6 +28,7 @@ public class ResolveReportCommandHandler : IRequestHandler<ResolveReportCommand,
         var userResolvedId = _authUtilities.GetUserId();
         
         report.ResolvedById = userResolvedId;
+        report.Status = ReportStatus.Resolved;
         report.ResolveDate = DateTime.UtcNow;
         
         await _reportRepository.UpdateAsync(report);

@@ -1,6 +1,7 @@
 using Bacheton.Infrastructure.Common.Errors;
 using Microsoft.AspNetCore.Diagnostics;
 using Serilog;
+using Serilog.Context;
 
 namespace Bacheton.Api.Common.HttpConfigurations;
 
@@ -16,8 +17,9 @@ public static class GlobalExceptionHandler
 
             if (exception is null)
                 return Results.Problem();
-            
-            Log.Error(exception.Message, exception.Data);
+
+            LogContext.PushProperty("Type", "Error");
+            LogContext.PushProperty("Message", exception.Message);
 
             return exception switch
             {
