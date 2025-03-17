@@ -1,5 +1,6 @@
 ﻿using Serilog.Context;
 using System.Security.Claims;
+using Serilog;
 
 namespace Bacheton.Api.Common.Middlewares // Usa tu namespace adecuado
 {
@@ -16,20 +17,22 @@ namespace Bacheton.Api.Common.Middlewares // Usa tu namespace adecuado
         {
             string userId = "Anonymous"; // Valor por defecto para usuarios no autenticados
 
-            // Verificar si el usuario está autenticado
-            if (context.User.Identity != null && context.User.Identity.IsAuthenticated)
+            if (context.User.Identity?.IsAuthenticated == true)
             {
-                // Aquí intentamos obtener el UserId del claim más común
                 userId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
                          ?? context.User.FindFirst("sub")?.Value
                          ?? context.User.FindFirst("userId")?.Value
                          ?? "UnknownUser";
             }
 
-            // Enriquecer el contexto del log con el UserId
+            // Enriquecer el log con el UserId
             LogContext.PushProperty("UserId", userId);
+            LogContext.PushProperty("TraceId", context.TraceIdentifier);
+            LogContext.PushProperty("Type", "Request");
 
-            await _next(context); // Continuar con el pipeline
+            await _next(context);
+            
+            LogContext.PushProperty("StatusCode", context.Response.StatusCode);
         }
     }
 }

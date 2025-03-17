@@ -21,8 +21,23 @@ public class SeqLogRepository : ILogRepository
     {
         var result = await _seqConnection.Events.ListAsync(count: 1000);
 
-        return result.Select(e => new LogResult(Id: e.Id, TraceId: e.TraceId,
-            Message: e.MessageTemplateTokens.Select(m => m.Text).ToList().First(),
-            Level: e.Level, Timestamp: e.Timestamp)).ToList();
+        var formated = result.Select(e =>
+        {
+            var requestPath = e.Properties?.FirstOrDefault(p => p.Name == "RequestPath")?.Value?.ToString();
+            var status = e.Properties?.FirstOrDefault(p => p.Name == "StatusCode")?.Value?.ToString();
+
+            return new LogResult(
+                Id: e.Id,
+                Timestamp: e.Timestamp,
+                Endpoint: requestPath,
+                Status: status,
+                TraceId: e.TraceId,
+                Duration: e.Properties?.FirstOrDefault(p => p.Name == "Elapsed")?.Value?.ToString(),
+                UserId: e.Properties?.FirstOrDefault(p => p.Name == "UserId")?.Value?.ToString(),
+                Level: e.Level
+            );
+        }).ToList();
+
+        return formated;
     }
 }
