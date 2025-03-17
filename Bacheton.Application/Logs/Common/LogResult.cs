@@ -8,4 +8,5 @@ public record LogResult(
     string? TraceId, 
     string? Duration,
     string? UserId,
-    string Level);
+    string Level,
+    string? Method);
