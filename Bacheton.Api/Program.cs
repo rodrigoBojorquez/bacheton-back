@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Bacheton.Api.Common.DependencyInjection;
 using Bacheton.Api.Common.HttpConfigurations;
 using Bacheton.Api.Common.Middlewares;
@@ -20,7 +21,10 @@ builder.Host.UseSerilog((context, configuration) =>
     configuration.ReadFrom.Configuration(context.Configuration);
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 var app = builder.Build();
 

@@ -23,6 +23,7 @@ public class Report
 public enum ReportStatus
 {
     Pending,
+    InProgress,
     Resolved
 }
 
