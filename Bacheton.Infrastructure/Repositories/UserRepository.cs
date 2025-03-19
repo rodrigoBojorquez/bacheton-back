@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Bacheton.Application.Common.Results;
 using Bacheton.Application.Interfaces.Repositories;
+using Bacheton.Application.User.Common;
 using Bacheton.Domain.Entities;
 using Bacheton.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -39,5 +40,14 @@ public class UserRepository : GenericRepository<User> , IUserRepository
         return await Context.Users
             .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Id == id);
+    }
+
+    public async Task<List<TopUserResult>> GetTopUsersAsync()
+    {
+        return await Context.Users
+            .OrderByDescending(u => u.Reports.Count)
+            .Take(10)
+            .Select(u => new TopUserResult(u.Id, u.Name, u.Email ?? string.Empty, u.Reports.Count))
+            .ToListAsync();
     }
 }

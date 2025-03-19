@@ -16,5 +16,6 @@ public class ModuleAccess
 public class PermissionPolicy
 {
     public required string Name { get; set; }
+    public required string DisplayName { get; set; }
     public string? ClientPath { get; set; }
 }

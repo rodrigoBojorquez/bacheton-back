@@ -89,6 +89,7 @@ public class AuthUtilities : IAuthUtilities
                 Permissions = g.Select(p => new PermissionPolicy
                 {
                     Name = p.Name,
+                    DisplayName = p.DisplayName,
                     ClientPath = p.ClientPath
                 }).Distinct().ToList(),
             })
@@ -102,9 +103,16 @@ public class AuthUtilities : IAuthUtilities
             [
                 new PermissionPolicy
                 {
-                    Name = "",
+                    Name = "dashboard",
+                    DisplayName = "Dashboard",
                     ClientPath = "/admin/dashboard"
-                }
+                },
+                new PermissionPolicy
+                {
+                    Name = "logs",
+                    DisplayName = "Logs",
+                    ClientPath = "/admin/logs"
+                },
             ]
         });
 
@@ -127,6 +135,7 @@ public class AuthUtilities : IAuthUtilities
                 Permissions = g.Select(p => new PermissionPolicy
                 {
                     Name = p.Name,
+                    DisplayName = p.DisplayName,
                     ClientPath = p.ClientPath
                 }).Distinct().ToList(),
             })
