@@ -7,7 +7,7 @@ public static class BachetonConstants
     public static class Permissions
     {
         public const string SuperAccessPermission = "superAdmin";
-        public const string SupervisorPermission = "monitoring:Reportes";
+        public const string SupervisorPermission = "monitoring";
     }
     
     public static class Roles

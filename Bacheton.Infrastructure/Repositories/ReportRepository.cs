@@ -1,5 +1,6 @@
 using Bacheton.Application.Common.Results;
 using Bacheton.Application.Interfaces.Repositories;
+using Bacheton.Application.Reports.Common;
 using Bacheton.Domain.Entities;
 using Bacheton.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,80 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
 
         return new ListResult<Report>(page, pageSize, totalItems, reports);
     }
+
+    public async Task<ReportSummaryResult> GetSummaryAsync(DateOnly? startDate = null, DateOnly? endDate = null)
+    {
+        IQueryable<Report> query = Context.Reports;
+
+        if (startDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) <= endDate.Value);
+
+        var totalReports = await query.CountAsync();
+        var totalResolvedReports = await query.CountAsync(r => r.Status == ReportStatus.Resolved);
+        var totalInProgressReports = await query.CountAsync(r => r.Status == ReportStatus.InProgress);
+        var totalPendingReports = await query.CountAsync(r => r.Status == ReportStatus.Pending);
+
+        return new ReportSummaryResult
+        (
+            TotalReports: totalReports,
+            ResolvedReports: totalResolvedReports,
+            InProgressReports: totalInProgressReports,
+            PendingReports: totalPendingReports
+        );
+    }
+
+    public async Task<SeverityCountResult> GetSeverityAsync(DateOnly? startDate = null, DateOnly? endDate = null)
+    {
+        IQueryable<Report> query = Context.Reports;
+
+        if (startDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) <= endDate.Value);
+
+        var totalReports = await query.CountAsync();
+        var lowSeverity = await query.CountAsync(r => r.Severity == ReportSeverity.Low);
+        var mediumSeverity = await query.CountAsync(r => r.Severity == ReportSeverity.Medium);
+        var highSeverity = await query.CountAsync(r => r.Severity == ReportSeverity.High);
+
+        return new SeverityCountResult
+        (
+            TotalReports: totalReports,
+            LowSeverity: lowSeverity,
+            MediumSeverity: mediumSeverity,
+            HighSeverity: highSeverity
+        );
+    }
+
+    public async Task<double> GetAverageResolutionTimeAsync(DateOnly? startDate = null, DateOnly? endDate = null)
+    {
+        IQueryable<Report> query = Context.Reports
+            .Where(r => r.Status == ReportStatus.Resolved && r.ResolveDate.HasValue);
+
+        if (startDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) >= startDate.Value);
+
+        if (endDate.HasValue)
+            query = query.Where(r => DateOnly.FromDateTime(r.CreateDate) <= endDate.Value);
+
+        var resolvedReports = await query
+            .Select(r => new { r.CreateDate, r.ResolveDate }) // Trae solo lo necesario
+            .ToListAsync(); // Materializa los datos
+
+        if (!resolvedReports.Any())
+            return 0;
+
+        double averageDays = resolvedReports
+            .Average(r => (r.ResolveDate!.Value - r.CreateDate).TotalDays);
+
+        return Math.Round(averageDays, 1); // Redondea a un decimal
+    }
+
+
 
     private static IQueryable<Report> ApplyFilters(ReportStatus? reportStatus, ReportSeverity? reportSeverity,
         Guid? userId, Guid? resolvedById,
