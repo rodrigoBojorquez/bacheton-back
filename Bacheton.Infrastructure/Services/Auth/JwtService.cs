@@ -133,4 +133,30 @@ public class JwtService : ITokenService
             await _context.SaveChangesAsync();
         }
     }
+    
+    private static AccessLevel GetAccessLevel(List<Permission> permissions)
+    {
+        var modules = permissions
+            .Select(p => p.Module)
+            .Distinct()
+            .Select(m => new ModuleAccess
+            {
+                Name = m.Name,
+                Icon = m.Icon,
+                Permissions = permissions
+                    .Where(p => p.ModuleId == m.Id)
+                    .Select(p => new PermissionPolicy
+                    {
+                        Name = p.Name,
+                        DisplayName = p.DisplayName
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        return new AccessLevel
+        {
+            Modules = modules
+        };
+    }
 }
