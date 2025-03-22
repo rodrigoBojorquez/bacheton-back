@@ -24,7 +24,7 @@ public class LogsController : ApiController
     }
 
     [HttpGet]
-    [RequiredPermission("superAdmin")]
+    [RequiredPermission("superAdmin:Administracion")]
     public async Task<IActionResult> List()
     {
         var query = new ListLogsQuery();
