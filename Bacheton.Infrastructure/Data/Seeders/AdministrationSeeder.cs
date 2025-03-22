@@ -28,6 +28,7 @@ public static partial class Seeder
                 new Module { Name = "Roles", Description = "Módulo de gestión de roles", Icon = "pi pi-shield" },
                 new Module { Name = "Permisos", Description = "Módulo de gestión de permisos", Icon = "pi pi-lock" },
                 new Module { Name = "Reportes", Description = "Modulo de reportes de bacheo", Icon = "pi pi-flag" },
+                new Module { Name = "Administracion", Description = "Módulo de administración", Icon = "pi pi-cog" }
             };
 
             var moduleTranslations = new Dictionary<string, string>
@@ -35,7 +36,8 @@ public static partial class Seeder
                 { "Usuarios", "users" },
                 { "Roles", "roles" },
                 { "Reportes", "reports" },
-                { "Permisos", "permissions" }
+                { "Permisos", "permissions" },
+                { "Administracion", "administration" },
             };
 
             await context.Set<Module>().AddRangeAsync(modules);
@@ -71,7 +73,14 @@ public static partial class Seeder
             permissions.AddRange(new[]
             {
                 new Permission
-                    { Name = "superAdmin", IsPublic = false, DisplayName = "Super acceso", Icon = "pi pi-star" },
+                {
+                    Name = "superAdmin", DisplayName = "Super acceso", Icon = "pi pi-star",
+                    ModuleId = modulesIds["Administracion"]
+                },
+                new Permission
+                {
+                    Name = "logs", DisplayName = "Logs", Icon = "pi pi-book", ModuleId = modulesIds["Administracion"],
+                },
                 new Permission
                 {
                     Name = "resolve",
