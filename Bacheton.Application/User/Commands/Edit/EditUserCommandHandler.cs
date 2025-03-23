@@ -25,9 +25,13 @@ public class EditUserCommandHandler : IRequestHandler<EditUserCommand, ErrorOr<U
         
         user.Name = request.Name;
         user.Email = request.Email;
-        user.Password = _passwordService.HashPassword(request.Password);
         user.RoleId = request.RoleId;
-        
+
+        if (!string.IsNullOrWhiteSpace(request.Password))
+        {
+            user.Password = _passwordService.HashPassword(request.Password);
+        }
+
         await _userRepository.UpdateAsync(user);
 
         return Result.Updated;
