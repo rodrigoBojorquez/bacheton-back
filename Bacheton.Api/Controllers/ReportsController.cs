@@ -90,7 +90,6 @@ public class ReportsController : ApiController
     }
 
     [HttpGet("{id:guid}")]
-    [RequiredPermission("read:Reportes")]
     public async Task<IActionResult> Get(Guid id)
     {
         var query = new FindReportQuery(id);
