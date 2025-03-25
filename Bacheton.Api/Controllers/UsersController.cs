@@ -78,7 +78,6 @@ public class UsersController : ApiController
     }
 
     [HttpPut]
-    [RequiredPermission("update:Usuarios")]
     public async Task<IActionResult> Update(UpdateUserRequest request)
     {
         var command = new EditUserCommand(request.Id, request.Name, request.Email, request.Password, request.RoleId);
