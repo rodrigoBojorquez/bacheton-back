@@ -67,7 +67,7 @@ public class AuthUtilities : IAuthUtilities
 
         var permissions = await _permissionRepository.GetByRoleAsync(user.RoleId);
 
-        if (permissions.Any(p => p.Name == BachetonConstants.Permissions.SuperAccessPermission))
+        if (permissions.Any(p => p.Name == "superAdmin"))
             return await GetFullAccess();
 
         var rootPath = GetRootPath(permissions);
@@ -118,7 +118,7 @@ public class AuthUtilities : IAuthUtilities
 
     private string GetRootPath(IEnumerable<Permission> permissions)
     {
-        return permissions.Any(p => p.Name == BachetonConstants.Permissions.SupervisorPermission) ? "/app/map" : "/app";
+        return permissions.Any(p => p.Name == BachetonConstants.Permissions.SupervisorPermission) ? "/app/map" : "/app/report";
     }
 
     private List<ModuleAccess> MapPermissionsToModules(IEnumerable<Permission> permissions)

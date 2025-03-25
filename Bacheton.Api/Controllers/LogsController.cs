@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Bacheton.Api.Controllers;
 
-public class LogsController : ApiController
+public class  LogsController : ApiController
 {
     private readonly IMediator _mediator;
 
