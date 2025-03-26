@@ -65,7 +65,7 @@ public class RoleRepository : GenericRepository<Role>, IRoleRepository
         return Result.Created;
     }
 
-    public new async Task<ErrorOr<ListResult<Role>>> ListAsync(int page = 1, int pageSize = 10, Expression<Func<Role, bool>>? filter = null)
+    public new async Task<ListResult<Role>> ListAsync(int page = 1, int pageSize = 10, Expression<Func<Role, bool>>? filter = null)
     {
         var query = Context.Roles
             .Include(x => x.Permissions) // Asegurar que se carguen los permisos

@@ -9,23 +9,20 @@ public class ImageService : IImageService
 {
     private readonly string _rootPath;
     private readonly FileExtensionContentTypeProvider _contentTypeProvider;
-    private readonly long _maxSize = 5 * 1024 * 1024; // 5MB
+    private const long MaxSize = 20 * 1024 * 1024; // 5MB
 
     public ImageService()
     {
-        _rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images");
+        _rootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
         _contentTypeProvider = new FileExtensionContentTypeProvider();
     }
 
     public async Task<ErrorOr<string>> UploadAsync(string fileName, Stream stream, string? subfolder,
         CancellationToken cancellationToken = default)
     {
-        List<Error> errors = new();
-
-        if (!_contentTypeProvider.TryGetContentType(fileName, out var contentType) || !contentType.StartsWith("image/"))
-            errors.Add(Errors.Asset.InvalidContentType);
+        List<Error> errors = [];
     
-        if (stream.Length > _maxSize)
+        if (stream.Length > MaxSize)
             errors.Add(Errors.Asset.InvalidSize);
     
         if (errors.Any())

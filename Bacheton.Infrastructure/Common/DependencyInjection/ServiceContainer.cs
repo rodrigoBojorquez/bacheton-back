@@ -17,25 +17,17 @@ namespace Bacheton.Infrastructure.Common.DependencyInjection;
 
 public static class ServiceContainer
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config, IHostEnvironment env)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config,
+        IHostEnvironment env)
     {
         LoggingProfile.Configure(config);
         services.AddJwtScheme(config);
-        
+
         services.AddDbContext<BachetonDbContext>(opt =>
         {
-            if (env.IsDevelopment())
-            {
-                opt.UseSqlite(config.GetConnectionString("BachetonConnection"))
-                    .UseSeeding((context, _) => { Seeder.Administration.SeedAsync(context).Wait(); })
-                    .UseAsyncSeeding(async (context, _, ct) => { await Seeder.Administration.SeedAsync(context); });
-            }
-            else
-            {
-                opt.UseNpgsql(config.GetConnectionString("BachetonConnection"))
-                    .UseSeeding((context, _) => { Seeder.Administration.SeedAsync(context).Wait(); })
-                    .UseAsyncSeeding(async (context, _, ct) => { await Seeder.Administration.SeedAsync(context); });
-            }
+            opt.UseSqlite(config.GetConnectionString("BachetonConnection"))
+                .UseSeeding((context, _) => { Seeder.Administration.SeedAsync(context).Wait(); })
+                .UseAsyncSeeding(async (context, _, ct) => { await Seeder.Administration.SeedAsync(context); });
         });
 
         services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
@@ -43,6 +35,8 @@ public static class ServiceContainer
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped<IModuleRepository, ModuleRepository>();
+        services.AddScoped<IReportRepository, ReportRepository>();
+        services.AddSingleton<ILogRepository, SeqLogRepository>();
 
         services.AddScoped<IPasswordService, PasswordService>();
         services.AddScoped<ITokenService, JwtService>();

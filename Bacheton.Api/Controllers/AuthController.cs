@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Bacheton.Api.Common.Controllers;
 using Bacheton.Application.Common.Auth;
 using Bacheton.Application.Interfaces.Services;
@@ -27,7 +28,7 @@ public class AuthController : ApiController
     public record LoginRequest(string Email, string Password);
 
     public record RegisterRequest(string Name, string Email, string Password);
-    
+
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginRequest request)
@@ -47,7 +48,7 @@ public class AuthController : ApiController
     {
         var command = new RegisterCommand(request.Name, request.Email, request.Password);
         var result = await _mediator.Send(command);
-        
+
         return result.Match(authResult =>
         {
             _authUtilities.SetRefreshToken(authResult.RefreshToken);
@@ -78,14 +79,19 @@ public class AuthController : ApiController
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken) || string.IsNullOrEmpty(refreshToken))
             return Problem(Errors.User.MissingRefreshToken);
-        
+
         await _tokenService.DeleteRefreshTokenAsync(refreshToken);
         return Ok();
     }
-    
+
     [HttpPost("show-access")]
     public async Task<IActionResult> ShowAccess()
     {
-        return Ok();
+        var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        if (userId is null) return Problem(Errors.User.Unauthorized);
+
+        var result = await _authUtilities.ShowAccessLevel(Guid.Parse(userId));
+
+        return result.Match(Ok, Problem);
     }
 }

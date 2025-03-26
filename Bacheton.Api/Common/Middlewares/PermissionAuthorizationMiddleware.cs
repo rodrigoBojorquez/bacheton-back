@@ -50,7 +50,7 @@ public class PermissionAuthorizationMiddleware
         var permissions = new HashSet<string>(permissionsClaim.Split(","));
 
         if (!permissions.Contains(requiredPermission) &&
-            !permissions.Contains(BachetonConstants.SuperAccessPermission))
+            !permissions.Contains(BachetonConstants.Permissions.SuperAccessPermission))
         {
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             return;
