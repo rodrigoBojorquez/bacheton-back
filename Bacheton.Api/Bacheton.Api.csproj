@@ -19,4 +19,10 @@
       <ProjectReference Include="..\Bacheton.Infrastructure\Bacheton.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!-- Evita que *.db se copie a la carpeta de publicación -->
+        <Content Remove="Data\*.db" />
+    </ItemGroup>
+
+
 </Project>

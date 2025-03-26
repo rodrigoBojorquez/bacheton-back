@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Bacheton.Api.Common.Controllers;
 
-[Route("api/[controller]")]
+[Route("bacheton-api/api/[controller]")]
 [ApiController]
 [Authorize]
 public class ApiController : ControllerBase

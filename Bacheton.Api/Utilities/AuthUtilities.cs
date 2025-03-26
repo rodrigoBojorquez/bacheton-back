@@ -35,8 +35,8 @@ public class AuthUtilities : IAuthUtilities
         {
             HttpOnly = true,
             Expires = DateTime.UtcNow.AddDays(_config.GetValue<int>("Authentication:RefreshTokenExpireDays")),
-            SameSite = SameSiteMode.None,
-            Secure = true
+            SameSite = SameSiteMode.Lax,
+            Secure = false
         };
 
         _httpContextAccessor.HttpContext?.Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);

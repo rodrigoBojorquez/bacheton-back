@@ -5,6 +5,7 @@ using Bacheton.Api.Common.Middlewares;
 using Bacheton.Application.Common.DepedencyInjection;
 using Bacheton.Infrastructure.Common.DependencyInjection;
 using Bacheton.Infrastructure.Common.Logging;
+using Microsoft.AspNetCore.HttpOverrides;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,10 +17,7 @@ builder.Services.AddUtilities();
 
 builder.Services.AddOpenApi(opt => { opt.AddDocumentTransformer<BearerSecuritySchemeTransformer>(); });
 
-builder.Host.UseSerilog((context, configuration) =>
-{
-    configuration.ReadFrom.Configuration(context.Configuration);
-});
+builder.Host.UseSerilog((context, configuration) => { configuration.ReadFrom.Configuration(context.Configuration); });
 
 builder.Services.AddControllers().AddJsonOptions(opt =>
 {
@@ -28,17 +26,29 @@ builder.Services.AddControllers().AddJsonOptions(opt =>
 
 var app = builder.Build();
 
+var dataPath = Path.Combine(AppContext.BaseDirectory, "Data");
+if (!Directory.Exists(dataPath))
+{
+    Directory.CreateDirectory(dataPath);
+}
+
 await app.UseTriggerSeeder();
 
 app.UseCors(config =>
 {
-    config.WithOrigins("http://localhost:5173").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    config.WithOrigins("https://bacheton.space", "http://localhost:5173").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 });
 
 app.MapOpenApi();
 app.UseSwaggerUI(config => { config.SwaggerEndpoint("/openapi/v1.json", "Bacheton API"); });
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.MapStaticAssets();
 app.UseGlobalExceptionHandler();
 app.UseAuthentication();

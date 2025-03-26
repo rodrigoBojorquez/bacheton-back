@@ -9,7 +9,7 @@ public class ImageService : IImageService
 {
     private readonly string _rootPath;
     private readonly FileExtensionContentTypeProvider _contentTypeProvider;
-    private const long MaxSize = 5 * 1024 * 1024; // 5MB
+    private const long MaxSize = 20 * 1024 * 1024; // 5MB
 
     public ImageService()
     {
@@ -21,9 +21,6 @@ public class ImageService : IImageService
         CancellationToken cancellationToken = default)
     {
         List<Error> errors = [];
-
-        if (!_contentTypeProvider.TryGetContentType(fileName, out var contentType) || !contentType.StartsWith("image/"))
-            errors.Add(Errors.Asset.InvalidContentType);
     
         if (stream.Length > MaxSize)
             errors.Add(Errors.Asset.InvalidSize);
